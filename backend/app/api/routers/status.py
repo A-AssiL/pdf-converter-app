@@ -1,3 +1,5 @@
+"""Status router for checking conversion progress and download URLs."""
+
 from fastapi import APIRouter, HTTPException
 
 from backend.app.services.job_service import JobService
@@ -9,6 +11,7 @@ job_service = JobService(settings=settings)
 router = APIRouter()
 
 @router.get("/{job_id}", response_model=StatusResponse)
+
 def get_status(job_id: str):
     job = job_service.get_job(job_id)
     if not job:

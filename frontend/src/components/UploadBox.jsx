@@ -1,5 +1,9 @@
+// Component for selecting and uploading DOCX files.
+
 import { useState } from "react";
 
+// Exported React component
+// Exported React component
 export default function UploadBox({ onUpload }) {
   const [selectedFile, setSelectedFile] = useState(null);
 

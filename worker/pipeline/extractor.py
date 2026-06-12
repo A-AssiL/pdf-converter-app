@@ -1,5 +1,6 @@
-from docx import Document
+"""Pipeline stage that extracts text from DOCX files."""
 
+from docx import Document
 
 def extract(docx_path: str) -> str:
     document = Document(docx_path)

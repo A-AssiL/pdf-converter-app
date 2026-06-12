@@ -1,9 +1,10 @@
+"""SQLAlchemy model representing conversion jobs."""
+
 from datetime import datetime
 from sqlalchemy import Column, DateTime, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 from backend.app.db.database import Base
-
 
 class Job(Base):
     __tablename__ = "jobs"

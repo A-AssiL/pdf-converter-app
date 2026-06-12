@@ -1,3 +1,5 @@
+"""Celery tasks that orchestrate the conversion pipeline."""
+
 from backend.app.workers.celery_app import celery_app
 from backend.app.core.config import Settings
 from backend.app.db import crud
@@ -9,7 +11,6 @@ from backend.app.services.job_service import JobService
 
 settings = Settings()
 job_service = JobService(settings=settings)
-
 
 def _process_stage(job_id: str):
     job = crud.get_job_by_id(job_id)
@@ -29,8 +30,8 @@ def _process_stage(job_id: str):
 
     crud.mark_job_done(job_id, str(final_pdf_path))
 
-
 @celery_app.task(name="backend.app.workers.tasks.process_document")
+
 def process_document(job_id: str):
     try:
         _process_stage(job_id)

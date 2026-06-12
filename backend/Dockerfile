@@ -1,3 +1,4 @@
+# Dockerfile for building the backend service image.
 FROM python:3.12-slim
 
 WORKDIR /app

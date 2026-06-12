@@ -1,10 +1,12 @@
+"""Service for rendering text to PDF output."""
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 from reportlab.lib.units import inch
 
-
 class PDFService:
+
     def create_pdf(self, text: str, output_path: str):
         pdf = SimpleDocTemplate(output_path, pagesize=letter,
                                 rightMargin=72, leftMargin=72,

@@ -1,9 +1,13 @@
+// Home page component that manages upload and status polling.
+
 import { useEffect, useState } from "react";
 import UploadBox from "../components/UploadBox";
 import ProgressBar from "../components/ProgressBar";
 import DownloadButton from "../components/DownloadButton";
 import { getJobStatus, uploadDocument } from "../services/api";
 
+// Exported React component
+// Exported React component
 export default function Home() {
   const [jobId, setJobId] = useState(null);
   const [status, setStatus] = useState(null);

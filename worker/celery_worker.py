@@ -1,3 +1,5 @@
+"""Celery worker entrypoint."""
+
 from backend.app.workers.celery_app import celery_app
 
 if __name__ == "__main__":

@@ -1,7 +1,10 @@
+"""Service for managing job lifecycle operations."""
+
 from backend.app.core.config import Settings
 from backend.app.db import crud
 
 class JobService:
+
     def __init__(self, settings: Settings):
         self.settings = settings
 

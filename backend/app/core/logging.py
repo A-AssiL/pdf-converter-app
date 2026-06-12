@@ -1,3 +1,5 @@
+"""Logging configuration helper for the backend service."""
+
 import logging
 
 from logging.config import dictConfig
@@ -17,7 +19,6 @@ LOG_CONFIG = {
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
-
 
 def setup_logging():
     dictConfig(LOG_CONFIG)

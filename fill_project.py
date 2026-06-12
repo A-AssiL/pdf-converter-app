@@ -1,3 +1,5 @@
+"""Source file for fill_project.py."""
+
 ﻿from pathlib import Path
 files = {
     "backend/app/main.py": '''from pathlib import Path
@@ -28,6 +30,7 @@ app.add_middleware(
 )
 
 @app.on_event("startup")
+# Function on_startup in this module.
 def on_startup():
     init_db()
 
@@ -36,6 +39,7 @@ app.include_router(status_router.router, prefix="/api/status", tags=["status"])
 app.include_router(download_router.router, prefix="/api/download", tags=["download"])
 
 @app.get("/api/health")
+# Function health_check in this module.
 def health_check():
     return {"status": "ok", "service": "pdf-converter"}
 ''',
@@ -59,6 +63,7 @@ job_service = JobService(settings=settings)
 router = APIRouter()
 
 @router.post("/", response_model=UploadResponse)
+# Function def in this module.
 async def upload_document(file: UploadFile = File(...)):
     allowed_types = [
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -91,6 +96,7 @@ job_service = JobService(settings=settings)
 router = APIRouter()
 
 @router.get("/{job_id}", response_model=StatusResponse)
+# Function get_status in this module.
 def get_status(job_id: str):
     job = job_service.get_job(job_id)
     if not job:
@@ -120,6 +126,7 @@ job_service = JobService(settings=settings)
 router = APIRouter()
 
 @router.get("/{job_id}")
+# Function download_pdf in this module.
 def download_pdf(job_id: str):
     job = job_service.get_job(job_id)
     if not job:
@@ -138,6 +145,7 @@ from pydantic import BaseSettings
 
 BASE_DIR = Path(__file__).resolve().parents[3]
 
+# Class Settings in this module.
 class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8000
@@ -148,6 +156,7 @@ class Settings(BaseSettings):
     processed_dir: Path = BASE_DIR / "storage" / "processed"
     temp_dir: Path = BASE_DIR / "storage" / "temp"
 
+# Class Config: in this module.
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
@@ -174,6 +183,7 @@ LOG_CONFIG = {
 }
 
 
+# Function setup_logging in this module.
 def setup_logging():
     dictConfig(LOG_CONFIG)
 ''',
@@ -191,11 +201,14 @@ from backend.app.core.config import Settings
 from backend.app.utils.file_utils import create_directories, make_safe_filename
 
 
+# Class FileService: in this module.
 class FileService:
+# Function __init__ in this module.
     def __init__(self, settings: Settings):
         self.settings = settings
         create_directories(self.settings.upload_dir, self.settings.processed_dir, self.settings.temp_dir)
 
+# Function def in this module.
     async def save_upload(self, upload_file: UploadFile) -> dict:
         safe_name = make_safe_filename(upload_file.filename)
         destination = self.settings.upload_dir / safe_name
@@ -210,22 +223,29 @@ class FileService:
     "backend/app/services/job_service.py": '''from backend.app.core.config import Settings
 from backend.app.db import crud
 
+# Class JobService: in this module.
 class JobService:
+# Function __init__ in this module.
     def __init__(self, settings: Settings):
         self.settings = settings
 
+# Function create_job in this module.
     def create_job(self, original_filename: str, upload_path: str):
         return crud.create_job(original_filename, upload_path)
 
+# Function get_job in this module.
     def get_job(self, job_id: str):
         return crud.get_job_by_id(job_id)
 
+# Function mark_job_processing in this module.
     def mark_job_processing(self, job_id: str):
         return crud.update_job_status(job_id, "processing")
 
+# Function mark_job_done in this module.
     def mark_job_done(self, job_id: str, output_path: str):
         return crud.mark_job_done(job_id, output_path)
 
+# Function mark_job_failed in this module.
     def mark_job_failed(self, job_id: str, error_message: str):
         return crud.mark_job_failed(job_id, error_message)
 ''',
@@ -233,7 +253,9 @@ class JobService:
     "backend/app/services/parser_service.py": '''from docx import Document
 
 
+# Class ParserService: in this module.
 class ParserService:
+# Function extract_text in this module.
     def extract_text(self, file_path: str) -> str:
         document = Document(file_path)
         paragraphs = [paragraph.text.strip() for paragraph in document.paragraphs if paragraph.text.strip()]
@@ -246,7 +268,9 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 from reportlab.lib.units import inch
 
 
+# Class PDFService: in this module.
 class PDFService:
+# Function create_pdf in this module.
     def create_pdf(self, text: str, output_path: str):
         pdf = SimpleDocTemplate(output_path, pagesize=letter,
                                 rightMargin=72, leftMargin=72,
@@ -293,6 +317,7 @@ settings = Settings()
 job_service = JobService(settings=settings)
 
 
+# Function _process_stage in this module.
 def _process_stage(job_id: str):
     job = crud.get_job_by_id(job_id)
     if not job:
@@ -313,6 +338,7 @@ def _process_stage(job_id: str):
 
 
 @celery_app.task(name="backend.app.workers.tasks.process_document")
+# Function process_document in this module.
 def process_document(job_id: str):
     try:
         _process_stage(job_id)
@@ -328,6 +354,7 @@ from sqlalchemy.orm import relationship
 from backend.app.db.database import Base
 
 
+# Class FileRecord in this module.
 class FileRecord(Base):
     __tablename__ = "files"
 
@@ -346,6 +373,7 @@ from sqlalchemy.orm import relationship
 from backend.app.db.database import Base
 
 
+# Class Job in this module.
 class Job(Base):
     __tablename__ = "jobs"
 
@@ -366,6 +394,7 @@ class Job(Base):
 from pydantic import BaseModel
 
 
+# Class UploadSchema in this module.
 class UploadSchema(BaseModel):
     notes: Optional[str] = None
 ''',
@@ -375,12 +404,14 @@ class UploadSchema(BaseModel):
 from pydantic import BaseModel
 
 
+# Class UploadResponse in this module.
 class UploadResponse(BaseModel):
     job_id: str
     status: str
     message: str
 
 
+# Class StatusResponse in this module.
 class StatusResponse(BaseModel):
     job_id: str
     status: str
@@ -392,11 +423,13 @@ class StatusResponse(BaseModel):
 from pathlib import Path
 
 
+# Function make_safe_filename in this module.
 def make_safe_filename(filename: str) -> str:
     sanitized = re.sub(r"[^a-zA-Z0-9_.-]", "_", filename)
     return sanitized.strip("_ ") or "uploaded_file"
 
 
+# Function create_directories in this module.
 def create_directories(*paths: Path):
     for path in paths:
         path.mkdir(parents=True, exist_ok=True)
@@ -407,7 +440,9 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 
+# Class PDFUtils: in this module.
 class PDFUtils:
+# Function render_text_to_pdf in this module.
     def render_text_to_pdf(self, text: str, output_path: str):
         doc = SimpleDocTemplate(output_path, pagesize=letter,
                                 rightMargin=72, leftMargin=72,
@@ -440,6 +475,7 @@ SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bi
 Base = declarative_base()
 
 
+# Function init_db in this module.
 def init_db():
     from backend.app.models.file_model import FileRecord
     from backend.app.models.job_model import Job
@@ -447,6 +483,7 @@ def init_db():
     Base.metadata.create_all(bind=engine)
 
 
+# Function get_db in this module.
 def get_db():
     db = SessionLocal()
     try:
@@ -463,6 +500,7 @@ from backend.app.models.file_model import FileRecord
 from backend.app.models.job_model import Job
 
 
+# Function create_file_record in this module.
 def create_file_record(filename: str, path: str) -> FileRecord:
     db = SessionLocal()
     try:
@@ -475,6 +513,7 @@ def create_file_record(filename: str, path: str) -> FileRecord:
         db.close()
 
 
+# Function create_job in this module.
 def create_job(filename: str, input_path: str) -> Job:
     db = SessionLocal()
     try:
@@ -495,6 +534,7 @@ def create_job(filename: str, input_path: str) -> Job:
         db.close()
 
 
+# Function get_job_by_id in this module.
 def get_job_by_id(job_id: str) -> Job | None:
     db = SessionLocal()
     try:
@@ -503,6 +543,7 @@ def get_job_by_id(job_id: str) -> Job | None:
         db.close()
 
 
+# Function update_job_status in this module.
 def update_job_status(job_id: str, status: str):
     db = SessionLocal()
     try:
@@ -518,6 +559,7 @@ def update_job_status(job_id: str, status: str):
         db.close()
 
 
+# Function mark_job_done in this module.
 def mark_job_done(job_id: str, output_path: str):
     db = SessionLocal()
     try:
@@ -534,6 +576,7 @@ def mark_job_done(job_id: str, output_path: str):
         db.close()
 
 
+# Function mark_job_failed in this module.
 def mark_job_failed(job_id: str, error_message: str):
     db = SessionLocal()
     try:
@@ -831,6 +874,7 @@ if __name__ == "__main__":
     "worker/pipeline/extractor.py": '''from docx import Document
 
 
+# Function extract in this module.
 def extract(docx_path: str) -> str:
     document = Document(docx_path)
     paragraphs = [paragraph.text.strip() for paragraph in document.paragraphs if paragraph.text.strip()]
@@ -840,6 +884,7 @@ def extract(docx_path: str) -> str:
     "worker/pipeline/normalizer.py": '''import re
 
 
+# Function normalize in this module.
 def normalize(text: str) -> str:
     normalized = re.sub(r"\r\n", "\n", text)
     normalized = re.sub(r"\n{3,}", "\n\n", normalized)
@@ -852,6 +897,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 
+# Function render in this module.
 def render(text: str, output_path: str):
     doc = SimpleDocTemplate(output_path, pagesize=letter,
                             rightMargin=72, leftMargin=72,
@@ -869,6 +915,7 @@ def render(text: str, output_path: str):
     "worker/pipeline/optimizer.py": '''import shutil
 
 
+# Function optimize in this module.
 def optimize(input_path: str, output_path: str):
     shutil.copyfile(input_path, output_path)
 ''',

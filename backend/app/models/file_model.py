@@ -1,9 +1,10 @@
+"""SQLAlchemy model representing uploaded file metadata."""
+
 from datetime import datetime
 from sqlalchemy import Column, DateTime, String
 from sqlalchemy.orm import relationship
 
 from backend.app.db.database import Base
-
 
 class FileRecord(Base):
     __tablename__ = "files"

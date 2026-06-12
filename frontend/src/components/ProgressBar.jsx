@@ -1,3 +1,7 @@
+// Component visualizing conversion progress.
+
+// Exported React component
+// Exported React component
 export default function ProgressBar({ status }) {
   const label = status === "pending" ? "Waiting for worker..." : status === "processing" ? "Processing document..." : status === "done" ? "Ready to download" : "Failed";
   return (

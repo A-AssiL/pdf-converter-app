@@ -1,3 +1,5 @@
+"""Upload router to receive Word documents and enqueue conversion jobs."""
+
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from backend.app.core.config import Settings
@@ -12,6 +14,7 @@ job_service = JobService(settings=settings)
 router = APIRouter()
 
 @router.post("/", response_model=UploadResponse)
+
 async def upload_document(file: UploadFile = File(...)):
     allowed_types = [
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",

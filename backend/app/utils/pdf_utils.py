@@ -1,9 +1,13 @@
+"""Source file for backend/app/utils/pdf_utils.py."""
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 
+# Class PDFUtils: in this module.
 class PDFUtils:
+# Function render_text_to_pdf in this module.
     def render_text_to_pdf(self, text: str, output_path: str):
         doc = SimpleDocTemplate(output_path, pagesize=letter,
                                 rightMargin=72, leftMargin=72,

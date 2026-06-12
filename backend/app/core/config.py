@@ -1,3 +1,5 @@
+"""Application configuration settings and environment values."""
+
 from pathlib import Path
 
 from pydantic import BaseSettings

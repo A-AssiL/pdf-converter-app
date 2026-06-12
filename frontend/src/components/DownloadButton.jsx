@@ -1,3 +1,7 @@
+// Component rendering the PDF download button.
+
+// Exported React component
+// Exported React component
 export default function DownloadButton({ url }) {
   if (!url) {
     return null;

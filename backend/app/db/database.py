@@ -1,3 +1,5 @@
+"""SQLAlchemy database engine, session, and initialization helpers."""
+
 from pathlib import Path
 
 from sqlalchemy import create_engine
@@ -15,13 +17,11 @@ engine = create_engine(
 SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 Base = declarative_base()
 
-
 def init_db():
     from backend.app.models.file_model import FileRecord
     from backend.app.models.job_model import Job
 
     Base.metadata.create_all(bind=engine)
-
 
 def get_db():
     db = SessionLocal()

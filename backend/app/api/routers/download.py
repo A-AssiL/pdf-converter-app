@@ -1,3 +1,5 @@
+"""Download router for serving generated PDF files."""
+
 import os
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
@@ -10,6 +12,7 @@ job_service = JobService(settings=settings)
 router = APIRouter()
 
 @router.get("/{job_id}")
+
 def download_pdf(job_id: str):
     job = job_service.get_job(job_id)
     if not job:

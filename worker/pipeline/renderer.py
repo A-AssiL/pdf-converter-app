@@ -1,7 +1,8 @@
+"""Pipeline stage that renders normalized text into PDF."""
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
-
 
 def render(text: str, output_path: str):
     doc = SimpleDocTemplate(output_path, pagesize=letter,

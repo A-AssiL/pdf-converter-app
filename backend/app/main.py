@@ -1,3 +1,5 @@
+"""FastAPI application entrypoint configuring CORS, routes, and startup behaviors."""
+
 import sys
 from pathlib import Path
 
@@ -35,6 +37,7 @@ app.add_middleware(
 
 # ---------------- Startup ----------------
 @app.on_event("startup")
+
 def on_startup():
     init_db()
 
@@ -45,6 +48,7 @@ app.include_router(download_router.router, prefix="/api/download", tags=["downlo
 
 # ---------------- Health ----------------
 @app.get("/api/health")
+
 def health_check():
     return {
         "status": "ok",

@@ -1,5 +1,11 @@
+// Frontend API helper module for upload and status endpoints.
+
+// Constant declaration
+// Constant declaration
 const API_BASE = "/api";
 
+// Exported async function
+// Exported async function
 export async function uploadDocument(file) {
   const formData = new FormData();
   formData.append("file", file);
@@ -17,6 +23,8 @@ export async function uploadDocument(file) {
   return response.json();
 }
 
+// Exported async function
+// Exported async function
 export async function getJobStatus(jobId) {
   const response = await fetch(`${API_BASE}/status/${jobId}`);
   if (!response.ok) {

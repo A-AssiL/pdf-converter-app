@@ -1,5 +1,6 @@
-import re
+"""Pipeline stage that normalizes extracted text."""
 
+import re
 
 def normalize(text: str) -> str:
     normalized = re.sub(r"\r\n", "\n", text)
