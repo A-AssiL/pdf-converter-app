@@ -1,0 +1,45 @@
+services:
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - ./config/app.env
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  worker:
+    image: python:3.12-slim
+    env_file:
+      - ./config/app.env
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ./:/app
+    working_dir: /app
+    depends_on:
+      - redis
+    command: ["sh", "-c", "pip install --no-cache-dir -r /app/worker/requirements.txt && python /app/worker/celery_worker.py"]
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app/frontend
+    volumes:
+      - ./frontend:/app/frontend
+    ports:
+      - "5173:5173"
+    command: ["sh", "-c", "npm install && npm run dev -- --host 0.0.0.0 --port 5173"]

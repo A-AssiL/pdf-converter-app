@@ -1,0 +1,7 @@
+celery[redis]
+redis
+python-docx
+reportlab
+python-dotenv
+SQLAlchemy
+pydantic<2

@@ -1,0 +1,10 @@
+fastapi==0.95.2
+uvicorn[standard]
+python-multipart
+SQLAlchemy
+pydantic<2
+python-docx
+reportlab
+celery[redis]
+redis
+python-dotenv
